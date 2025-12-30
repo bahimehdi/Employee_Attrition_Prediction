@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Project specific
+*.pdf
+# except the final report if desired, but often PDFs are build artifacts. 
+# Given this is a "submission" folder, maybe we keep PDFs? 
+# The user has final_submission.zip which definitely shouldn't be tracked if unzipped.
+*.zip
+
+# OS
+.DS_Store
+Thumbs.db

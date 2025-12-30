@@ -1,0 +1,1431 @@
+\documentclass[12pt,a4paper,oneside]{report}
+
+% ============================================================================
+% PACKAGES ET CONFIGURATION
+% ============================================================================
+
+\usepackage{silence}
+\WarningFilter{latex}{Command \showhyphens}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\geometry{top=3cm, bottom=3cm, left=2.5cm, right=2.5cm, headheight=15pt}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{setspace}
+% \usepackage{microtype} % Removed to prevent compilation timeout
+\usepackage{enumitem}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{tikz}
+% \usepackage{pgfplots}
+% \pgfplotsset{compat=1.18}
+\usepackage{makecell}
+\usepackage{longtable}
+% \usetikzlibrary{shadows,calc,decorations.pathreplacing}
+
+% ============================================================================
+% COULEURS PROFESSIONNELLES
+% ============================================================================
+
+\definecolor{NavyDark}{RGB}{15, 32, 65}
+\definecolor{RoyalBlue}{RGB}{41, 128, 185}
+\definecolor{SkyBlue}{RGB}{52, 152, 219}
+\definecolor{SlateGray}{RGB}{52, 73, 94}
+\definecolor{LightBlue}{RGB}{236, 240, 241}
+\definecolor{Forest}{RGB}{39, 174, 96}
+\definecolor{Coral}{RGB}{230, 126, 34}
+\definecolor{Crimson}{RGB}{192, 57, 43}
+\definecolor{CodeBg}{RGB}{239, 242, 245}
+\definecolor{AccentGold}{RGB}{215, 123, 83}
+
+% ============================================================================
+% TYPOGRAPHIE ET ESPACEMENT
+% ============================================================================
+
+\onehalfspacing
+\setlength{\parskip}{0.8em}
+\setlength{\parindent}{0.5cm}
+\setlist[itemize]{noitemsep, topsep=0.3em, leftmargin=2cm}
+\setlist[enumerate]{noitemsep, topsep=0.3em, leftmargin=2cm}
+
+% ============================================================================
+% EN-TÊTES ET PIEDS DE PAGE
+% ============================================================================
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.8pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\renewcommand{\headrule}{\color{RoyalBlue}\hrule width\headwidth height\headrulewidth}
+\renewcommand{\footrule}{\color{RoyalBlue}\hrule width\headwidth height\footrulewidth}
+
+\fancyhead[L]{\small \textcolor{NavyDark}{\textbf{Prediction Analysis}}}
+\fancyhead[R]{\small \textcolor{NavyDark}{}}
+\fancyfoot[L]{\small \textcolor{SlateGray}{Machine Learning Analysis}}
+\fancyfoot[C]{\small \textcolor{SlateGray}{\thepage}}
+\fancyfoot[R]{\small \textcolor{SlateGray}{2025}}
+
+% ============================================================================
+% STYLES DE TITRES
+% ============================================================================
+
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries}
+  {\color{RoyalBlue}\filleft\fontsize{80}{100}\selectfont\thechapter}
+  {-3ex}
+  {\color{NavyDark}\vspace{2ex}\Large\titlerule\vspace{1.5ex}}
+  [\vspace{1ex}\titlerule]
+
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{RoyalBlue}}
+  {\thesection\quad}{0em}{}
+  [\vspace{0.3ex}\color{RoyalBlue}\hrule]
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{SlateGray}}
+  {\thesubsection\quad}{0em}{}
+
+\titleformat{\subsubsection}
+  {\normalfont\bfseries\color{SkyBlue}}
+  {\thesubsubsection\quad}{0em}{}
+
+% ============================================================================
+% CONFIGURATION DES LISTINGS (CODE)
+% ============================================================================
+
+\lstdefinestyle{PythonStyle}{
+    backgroundcolor=\color{CodeBg},
+    commentstyle=\color{Forest}\itshape\small,
+    keywordstyle=\color{NavyDark}\bfseries,
+    numberstyle=\tiny\color{SlateGray},
+    stringstyle=\color{Coral},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=t,
+    keepspaces=true,
+    numbers=left,
+    numbersep=10pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4,
+    frame=single,
+    rulecolor=\color{RoyalBlue!40},
+    xleftmargin=20pt,
+    framexleftmargin=15pt,
+    lineskip=-1.5pt,
+    aboveskip=10pt,
+    belowskip=10pt
+}
+\lstset{style=PythonStyle}
+
+% ============================================================================
+% BOÎTES PERSONNALISÉES
+% ============================================================================
+
+\newtcolorbox{highlight}[1]{
+  colback=LightBlue!40,
+  colframe=RoyalBlue,
+  fonttitle=\bfseries\large,
+  title=#1,
+  arc=3pt,
+  boxrule=2pt,
+  left=12pt,
+  right=12pt,
+  top=10pt,
+  bottom=10pt
+}
+
+\newtcolorbox{keyinsight}[1]{
+  colback=LightBlue!20,
+  colframe=Forest,
+  fonttitle=\bfseries,
+  title=#1,
+  arc=2pt,
+  boxrule=1.5pt,
+  left=10pt,
+  right=10pt,
+  top=8pt,
+  bottom=8pt
+}
+
+\newtcolorbox{warning}[1]{
+  colback=Crimson!10,
+  colframe=Crimson,
+  fonttitle=\bfseries,
+  title=#1,
+  arc=2pt,
+  boxrule=1.5pt,
+  left=10pt,
+  right=10pt,
+  top=8pt,
+  bottom=8pt
+}
+
+\newtcolorbox{methodology}[1]{
+  colback=AccentGold!15,
+  colframe=AccentGold,
+  fonttitle=\bfseries\large,
+  title=#1,
+  arc=3pt,
+  boxrule=2pt,
+  left=12pt,
+  right=12pt,
+  top=10pt,
+  bottom=10pt
+}
+
+\newtcolorbox{note}{
+  colback=LightBlue!10,
+  colframe=SlateGray,
+  fonttitle=\bfseries,
+  title=Note,
+  arc=2pt,
+  boxrule=1pt,
+  left=10pt,
+  right=10pt,
+  top=8pt,
+  bottom=8pt,
+  detach title,
+  before upper={\textbf{\tcbtitle} : }
+}
+
+% ============================================================================
+% HYPERLINKS
+% ============================================================================
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=RoyalBlue,
+    citecolor=RoyalBlue,
+    urlcolor=SkyBlue,
+    pdftitle={Employee Attrition Prediction - Machine Learning Analysis},
+    pdfauthor={Data Science Team},
+    pdfsubject={Comprehensive ML Model Comparison},
+    pdfkeywords={Machine Learning, Classification, Employee Attrition, HR Analytics}
+}
+
+% ============================================================================
+% DÉBUT DU DOCUMENT
+% ============================================================================
+
+\begin{document}
+
+% ============================================================================
+% PAGE DE TITRE
+% ============================================================================
+
+\begin{titlepage}
+    \begin{tikzpicture}[remember picture,overlay]
+        % Background
+        \fill[white] (current page.north west) rectangle (current page.south east);
+        % Top Accent
+        \fill[RoyalBlue] (current page.north west) rectangle ([yshift=-1.5cm]current page.north east);
+        % Bottom Accent
+        \fill[NavyDark] (current page.south west) rectangle ([yshift=1.5cm]current page.south east);
+        % Decorative Elements
+        \fill[SkyBlue, opacity=0.1] ([xshift=-2cm, yshift=-4cm]current page.north east) circle (6cm);
+        \fill[RoyalBlue, opacity=0.1] ([xshift=2cm, yshift=4cm]current page.south west) circle (6cm);
+    \end{tikzpicture}
+    
+    \centering
+    \vspace*{3.5cm}
+    
+    % Header
+    {\Large\bfseries\color{SlateGray} PROJET DE DATA SCIENCE}
+    
+    \vspace{0.5cm}
+    \rule{0.4\textwidth}{1pt}
+    \vspace{1.5cm}
+    
+    % Main Title
+    {\fontsize{38}{48}\selectfont\bfseries\color{NavyDark}
+        EMPLOYEE ATTRITION\\[30pt] PREDICTION
+    }
+    
+    \vspace{1cm}
+    
+    % Subtitle
+    {\fontsize{18}{22}\selectfont\color{RoyalBlue}
+        Analyse Comparative de 12 Modèles de Machine Learning\\
+        pour la Gestion des Ressources Humaines
+    }
+    
+    \vspace{2cm}
+    
+    % Authors Box
+    \begin{tcolorbox}[
+        colback=white,
+        colframe=RoyalBlue!80,
+        boxrule=0.5pt,
+        width=0.75\textwidth,
+        arc=2pt,
+        top=15pt, bottom=15pt
+    ]
+        \centering
+        \small\sffamily\color{SlateGray} RÉALISÉ PAR
+        \vspace{0.4cm}
+        
+        {\Large\bfseries\color{NavyDark} Mehdi BAHI}
+        
+        \vspace{0.2cm}
+        
+        {\Large\bfseries\color{NavyDark} Mustapha MELLAKI}
+    \end{tcolorbox}
+    
+    \vfill
+    
+    % Date
+    {\color{white}\textbf{\large Année Universitaire 2024-2025}}
+    \vspace{0.5cm}
+\end{titlepage}
+
+% ============================================================================
+% TABLE DES MATIÈRES
+% ============================================================================
+
+\newpage
+\tableofcontents
+\newpage
+
+% ============================================================================
+% CHAPITRE 1 : COMPRÉHENSION MÉTIER
+% ============================================================================
+
+\chapter{Compréhension Métier et Cadrage du Problème}
+
+\section{Contexte et Enjeux}
+
+L'attrition des employés (employee attrition) représente un défi majeur pour les organisations modernes. Elle désigne le départ volontaire ou involontaire d'employés de l'entreprise, entraînant des coûts directs et indirects considérables.
+
+\subsection{Pourquoi prédire l'attrition?}
+
+\begin{enumerate}
+    \item \textbf{Coûts financiers} : Le remplacement d'un employé coûte en moyenne 50--200\% de son salaire annuel (recrutement, formation, perte de productivité).
+    
+    \item \textbf{Expertise perdue} : Le départ d'employés expérimentés entraîne une perte de connaissances et de compétences critiques.
+    
+    \item \textbf{Impact sur l'équipe} : L'attrition affecte le moral et la productivité des employés restants.
+\end{enumerate}
+
+\subsection{Dataset IBM HR Employee Attrition}
+
+Ce dataset public contient des informations sur 1,470 employés d'une organisation fictive, incluant :
+\begin{itemize}
+    \item Données démographiques (âge, genre, situation familiale)
+    \item Informations professionnelles (rôle, département, niveau hiérarchique)
+    \item Compensation (salaire mensuel, augmentation salariale)
+    \item Satisfaction (travail, environnement, équilibre vie-travail)
+    \item Historique (années dans l'entreprise, promotions)
+\end{itemize}
+
+\section{Problématique Scientifique}
+
+\begin{methodology}{Formulation du Problème}
+    \textbf{Question centrale :} Peut-on construire un modèle prédictif capable de déterminer, avec précision statistique, si un employé donné risque de quitter l'entreprise en se basant sur ses caractéristiques démographiques, professionnelles et de satisfaction?
+    
+    \textbf{Type de problème :} Classification binaire supervisée (Attrition: Oui=1, Non=0)
+    
+    \textbf{Métrique primaire :} Accuracy (précision globale)\\
+    \textbf{Métriques secondaires :} Precision, Recall, F1-Score, matrices de confusion
+\end{methodology}
+
+\section{Objectifs Stratégiques}
+
+L'analyse s'organise autour de cinq objectifs interconnectés :
+
+\begin{enumerate}
+    \item \textbf{Réduction des Features} : Sélectionner les 12 variables les plus pertinentes parmi 35 pour améliorer l'interprétabilité
+    
+    \item \textbf{Exploration Comparative} : Évaluer 12 algorithmes différents (supervisés et non-supervisés) dans des conditions équivalentes
+    
+    \item \textbf{Identification des Facteurs Clés} : Déterminer quels facteurs influencent le plus la décision de départ d'un employé
+    
+    \item \textbf{Performance Maximale} : Identifier le modèle offrant la meilleure capacité prédictive
+    
+    \item \textbf{Recommandations RH} : Fournir des insights actionnables pour la politique de rétention
+\end{enumerate}
+
+\begin{keyinsight}{Enjeu Central}
+Ce projet transcende l'exercice technique. Il s'agit de comprendre comment les facteurs organisationnels, managériaux et individuels influencent la fidélité des employés, en utilisant les données comme prisme analytique pour guider les décisions RH.
+\end{keyinsight}
+
+% ============================================================================
+% CHAPITRE 2 : ANALYSE EXPLORATOIRE (12 VARIABLES)
+% ============================================================================
+
+\chapter{Analyse Exploratoire et Statistiques du Dataset}
+
+\section{Vue d'Ensemble Structurelle}
+
+Le dataset IBM HR Employee Attrition se compose de:
+\begin{itemize}
+    \item \textbf{1,470 observations} : employés individuels
+    \item \textbf{35 colonnes au total} : (34 features + 1 variable cible)
+    \item \textbf{Réduction à 12 variables clés} pour l'analyse
+    \item \textbf{Cible binaire} : variable \texttt{Attrition} (No = 0, Yes = 1)
+    \item \textbf{Taux d'attrition} : 16.12\% (237 sur 1,470)
+\end{itemize}
+
+\section{Réduction de Features: 34 \texorpdfstring{$\rightarrow$}{->} 12}
+
+\subsection{Analyse de Corrélation Étendue}
+
+Pour justifier rigoureusement la sélection des variables, nous avons analysé l'ensemble des 34 features initiales. La figure ci-dessous visualise l'importance de chaque variable par rapport à l'attrition.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{feature_importance_all.png}
+    \caption{Analyse de corrélation sur les 35 variables (Vert = Conservées, Rouge = Rejetées).}
+    \label{fig:feature_importance}
+\end{figure}
+
+\subsection{Justification de la Sélection}
+
+La réduction s'est opérée en trois filtres successifs :
+
+\begin{enumerate}
+    \item \textbf{1. Suppression des Constantes} : Les variables \texttt{StandardHours}, \texttt{Over18} et \texttt{EmployeeCount} (variance nulle) sont retirées.
+    
+    \item \textbf{2. Élimination par Faible Corrélation (<0.05)} : Des variables comme \texttt{HourlyRate}, \texttt{PercentSalaryHike} ou \texttt{PerformanceRating} montrent une corrélation négligeable avec l'attrition sur ce dataset.
+    
+    \item \textbf{3. Gestion de la Multicolinéarité} : \texttt{JobLevel} et \texttt{TotalWorkingYears} sont fortement corrélés avec \texttt{MonthlyIncome}. Nous avons conservé \texttt{MonthlyIncome} car c'est la métrique la plus actionnable pour les RH.
+\end{enumerate}
+
+\subsection{Les 12 Variables Sélectionnées}
+
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{l|l|l|>{\raggedright\arraybackslash}p{5cm}}
+        \toprule
+        \textbf{Variable} & \textbf{Type} & \textbf{Catégorie} & \textbf{Justification} \\
+        \midrule
+        Age & Numérique & Démographique & Les jeunes employés ont plus de mobilité \\
+        Gender & Catégorique & Démographique & Différences potentielles de comportement \\
+        MaritalStatus & Catégorique & Personnel & Impact sur la stabilité \\
+        \midrule
+        MonthlyIncome & Numérique & Compensation & Facteur critique de satisfaction \\
+        \midrule
+        JobSatisfaction & Numérique & Satisfaction & Corrélation directe avec attrition \\
+        EnvironmentSatisfaction & Numérique & Satisfaction & Qualité de l'environnement de travail \\
+        WorkLifeBalance & Numérique & Satisfaction & Équilibre vie pro/perso \\
+        \midrule
+        OverTime & Catégorique & Conditions & Heures supplémentaires = burnout \\
+        YearsAtCompany & Numérique & Ancienneté & Fidélité historique \\
+        \midrule
+        JobRole & Catégorique & Poste & Certains rôles plus à risque \\
+        Department &Catégorique & Organisation & Cultures départementales différentes \\
+        DistanceFromHome & Numérique & Logistique & Trajet long = risque accru \\
+        \bottomrule
+    \end{tabular}
+    \caption{Description des 12 variables sélectionnées pour l'analyse.}
+\end{table}
+
+\section{Statistiques Descriptives}
+
+\subsection{Distribution de l'Attrition}
+
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{l|r|r|l}
+        \toprule
+        \textbf{Statut} & \textbf{Compte} & \textbf{Pourcentage} & \textbf{Implication} \\
+        \midrule
+        Rétention (No) & 1,233 & 83.88\% & Majorité, classe dominante \\
+        Attrition (Yes) & 237 & 16.12\% & Minorité significative \\
+        \midrule
+        \textbf{Total} & \textbf{1,470} & \textbf{100\%} & Données légèrement déséquilibrées \\
+        \bottomrule
+    \end{tabular}
+    \caption{Distribution de la variable cible Attrition.}
+\end{table}
+
+\textbf{Observation clé} : Le déséquilibre (84\%/16\%) est modéré et reflète la réalité des organisations. Les modèles devront être évalués avec attention sur la classe minoritaire (Attrition).
+
+\subsection{Analyse Démographique}
+
+\textbf{Âge:}
+\begin{itemize}
+    \item Moyenne globale: 37 ans
+    \item Employés ayant quitté: 34 ans (moyenne)
+    \item Employés restés: 37 ans (moyenne)
+    \item \textbf{Insight} : Les employés plus jeunes sont légèrement plus susceptibles de partir
+\end{itemize}
+
+\textbf{Genre:}
+\begin{itemize}
+    \item Hommes: 60\% | Femmes: 40\%
+    \item Taux d'attrition similaire entre les genres
+\end{itemize}
+
+\subsection{Facteurs Professionnels Critiques}
+
+\textbf{Heures Supplémentaires (OverTime):}
+
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{l|r|r}
+        \toprule
+        \textbf{Catégorie} & \textbf{Effectif} & \textbf{Taux Attrition} \\
+        \midrule
+        Pas d'heures sup (No) & 1,054 & 10.4\% \\
+        Heures supplémentaires (Yes) & 416 & 30.5\% \\
+        \bottomrule
+    \end{tabular}
+    \caption{Impact des heures supplémentaires sur l'attrition.}
+\end{table}
+
+\textbf{Interprétation} : Les employés faisant des heures supplémentaires ont un taux d'attrition \textbf{3 fois supérieur}, suggérant un lien fort avec le burnout.
+
+\textbf{Salaire Mensuel (MonthlyIncome):}
+\begin{itemize}
+    \item Moyenne (restés): 6,833\$
+    \item Moyenne (partis): 4,787\$
+    \item \textbf{Écart: -30\%} pour ceux ayant quitté
+\end{itemize}
+
+\textbf{Années dans l'entreprise (YearsAtCompany):}
+\begin{itemize}
+    \item Employés restés: 7.4 ans (moyenne)
+    \item Employés partis: 5.1 ans (moyenne)
+    \item Pattern: Attrition élevée dans les 2 premières années
+\end{itemize}
+
+\begin{keyinsight}{Patterns Structurels Identifiés}
+Les données révèlent trois facteurs dominants d'attrition :
+\begin{enumerate}
+    \item \textbf{Heures supplémentaires} : Signal le plus fort (× 3 risque)
+    \item \textbf{Salaire bas} : Employés partis gagnent 30\% de moins
+    \item \textbf{Faible ancienneté} : Risque maximal dans les 2 premières années
+\end{enumerate}
+\end{keyinsight}
+
+% ============================================================================
+% CHAPITRE 3 : PRÉPARATION DES DONNÉES
+% ============================================================================
+
+\chapter{Préparation des Données et Feature Engineering}
+
+\section{Gestion des Données et Nettoyage Rigoureux}
+
+Bien que le dataset IBM HR soit initialement propre, nous avons appliqué un protocole de structuration rigoureux pour garantir la robustesse du pipeline en production.
+
+\subsection{Standardisation et Imputation}
+Pour prévenir toute erreur future (ex: nouvelles données incomplètes), nous avons mis en place des règles d'imputation explicites :
+\begin{itemize}
+    \item \textbf{Variables Catégorielles} : Imputation par le \textbf{Mode} (valeur la plus fréquente).
+    \item \textbf{Variables Numériques} : Imputation par la \textbf{Médiane}, plus robuste aux outliers que la moyenne.
+\end{itemize}
+
+\subsection{Traitement des Outliers (Méthode IQR)}
+Nous avons utilisé la méthode de l'écart interquartile (IQR) pour identifier et traiter les valeurs extrêmes sur les variables continues clés (Revenu, Ancienneté).
+
+$$ \text{Seuils} = [Q1 - 1.5 \times IQR, \quad Q3 + 1.5 \times IQR] $$
+
+Les valeurs hors de ces bornes ont été plafonnées ("Winsorization") plutôt que supprimées, afin de conserver l'information sans biaiser les modèles.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{eda_plots/box_MonthlyIncome.png}
+        \caption{Distributions du Revenu}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{eda_plots/box_YearsAtCompany.png}
+        \caption{Distributions de l'Ancienneté}
+    \end{minipage}
+    \caption{Détection visuelle des outliers et relation avec l'attrition.}
+\end{figure}
+
+\section{Encodage des Variables Catégorielles}
+
+Les modèles ML nécessitent des données numériques. Stratégie d'encodage :
+
+\subsection{Variables Binaires}
+
+\begin{lstlisting}[language=Python, caption=Encodage binaire simple]
+# Target : Attrition
+df['Attrition'] = df['Attrition'].map({'No': 0, 'Yes': 1})
+
+# Gender
+df['Gender'] = df['Gender'].map({'Male': 0, 'Female': 1})
+
+# OverTime
+df['OverTime'] = df['OverTime'].map({'No': 0, 'Yes': 1})
+\end{lstlisting}
+
+\subsection{Variables Multicatégorielles}
+
+Pour les variables avec plus de 2 catégories (\texttt{JobRole}, \texttt{Department}, \texttt{MaritalStatus}), utilisation de \textbf{Label Encoding} :
+
+\begin{lstlisting}[language=Python, caption=Label encoding pour variables ordinales]
+from sklearn.preprocessing import LabelEncoder
+
+le_jobrole = LabelEncoder()
+df['JobRole'] = le_jobrole.fit_transform(df['JobRole'])
+# Sales Executive=0, Research Scientist=1, ...
+
+le_dept = LabelEncoder()
+df['Department'] = le_dept.fit_transform(df['Department'])
+# HR=0, R&D=1, Sales=2
+
+le_marital = LabelEncoder()
+df['MaritalStatus'] = le_marital.fit_transform(df['MaritalStatus'])
+# Divorced=0, Married=1, Single=2
+\end{lstlisting}
+
+\textbf{Justification} : Label Encoding choisi pour sa simplicité et parce que certaines catégories ont un ordre implicite (ex: célibataire $\rightarrow$ marié $\rightarrow$ divorcé représente des étapes de vie).
+
+\section{Normalisation des Features}
+
+Pour les modèles sensibles à l'échelle (K-NN, SVM, Gradient Descent), normalisation avec \texttt{StandardScaler} :
+
+\begin{lstlisting}[language=Python, caption=Standardisation des features]
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Apres scaling: moyenne approx 0, ecart-type approx 1
+\end{lstlisting}
+
+\textbf{Note importante} : Les modèles basés sur les arbres (Decision Tree, Random Forest) n'ont \textbf{pas besoin} de normalisation car ils sont invariants à l'échelle.
+
+\section{Dataset Final}
+
+Après préparation :
+\begin{itemize}
+    \item \textbf{1,470 observations} intactes (pas de suppression de lignes)
+    \item \textbf{12 features} : toutes numériques après encodage
+    \item \textbf{0 valeurs manquantes}
+    \item \textbf{Ratio de classes} : 84\% rétention vs 16\% attrition (stratification lors du split)
+\end{itemize}
+
+% ============================================================================
+% CHAPITRE 4 : MÉTHODOLOGIE ET PROTOCOLE EXPÉRIMENTAL
+% ============================================================================
+
+\chapter{Méthodologie et Protocole Expérimental}
+
+\section{Division Train-Test}
+
+\begin{methodology}{Train-Test Split}
+    \textbf{Proportions :}
+    \begin{itemize}
+        \item 80\% Ensemble d'entraînement (1,176 échantillons)
+        \item 20\% Ensemble de test (294 échantillons)
+    \end{itemize}
+    
+    \textbf{Rationale :}
+    \begin{itemize}
+        \item 80-20 = standard industriel, bon compromis biais-variance
+        \item 20\% de test ($\approx 294$ observations) suffisant pour estimation robuste
+        \item \texttt{random\_state=42} pour reproductibilité
+        \item \texttt{stratify=y} pour préserver le ratio 84\%/16\% dans train et test
+    \end{itemize}
+\end{methodology}
+
+\begin{lstlisting}[language=Python, caption=Protocole de split]
+from sklearn.model_selection import train_test_split
+
+X = df.drop('Attrition', axis=1)  # 12 features
+y = df['Attrition']                # Target
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y  # Preserve le ratio de classes
+)
+
+print(f"Train: {X_train.shape}")  # (1176, 12)
+print(f"Test:  {X_test.shape}")   # (294, 12)
+\end{lstlisting}
+
+\section{Métriques d'Évaluation}
+
+Quatre métriques complémentaires pour une évaluation exhaustive :
+
+\subsection{Accuracy (Précision Globale)}
+
+$$\text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}$$
+
+Où: TP=Vrais Positifs, TN=Vrais Négatifs, FP=Faux Positifs, FN=Faux Négatifs
+
+\textbf{Interprétation} : Pourcentage global de prédictions correctes. Métrique primaire pour notre problème légèrement déséquilibré.
+
+\subsection{Precision (Valeur Prédictive Positive)}
+
+$$\text{Precision} = \frac{TP}{TP + FP}$$
+
+\textbf{Question} : Quand le modèle prédit "attrition", combien de fois a-t-il raison?
+
+\textbf{Importance} : Minimise les fausses alarmes (prédire à tort qu'un employé partira).
+
+\subsection{Recall (Sensibilité)}
+
+$$\text{Recall} = \frac{TP}{TP + FN}$$
+
+\textbf{Question} : Sur tous les vrais cas d'attrition, combien le modèle détecte-t-il?
+
+\textbf{Importance} : Maximise la détection des départs réels (ne pas manquer un employé à risque).
+
+\subsection{F1-Score}
+
+$$\text{F1} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$$
+
+\textbf{Utilité} : Moyenne harmonique, utile quand on cherche l'équilibre entre précision et rappel.
+
+\section{Stratégie de Comparaison}
+
+Tous les modèles sont évalués dans des conditions identiques :
+\begin{itemize}
+    \item \textbf{Même split} : random\_state=42 garantit le même train/test
+    \item \textbf{Même preprocessing} : encodage et normalisation cohérents
+    \item \textbf{Mêmes métriques} : Accuracy, Precision, Recall, F1 pour tous
+    \item \textbf{Même seed} : reproductibilité totale des résultats
+\end{itemize}
+
+% ============================================================================
+% CHAPITRE 5 : LES 10 MODÈLES DE MACHINE LEARNING
+% ============================================================================
+
+\chapter{Évaluation Comparative de 12 Modèles de Classification}
+
+Ce chapitre constitue le coeur analytique. Nous évaluons 12 algorithmes distincts dans des conditions identiques.
+
+\section{Résumé Comparatif Global}
+
+\begin{table}[H]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabular}{l|l|c|c|c|c}
+        \toprule
+        \textbf{Rang} & \textbf{Modèle} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} \\
+        \midrule
+        1 & \textbf{Voting Classifier} & \textbf{87.07\%} & \textbf{76.47\%} & 27.66\% & 40.62\% \\
+        2 & Logistic Regression & 86.73\% & 75.00\% & 25.53\% & 38.10\% \\
+        3 & XGBoost & 86.39\% & 66.67\% & 29.79\% & 41.18\% \\
+        4 & SVM (RBF) & 85.71\% & 72.73\% & 17.02\% & 27.59\% \\
+        5 & Gradient Descent & 85.03\% & 54.29\% & 40.43\% & 46.34\% \\
+        6 & Decision Tree & 84.35\% & 51.35\% & 40.43\% & 45.24\% \\
+        7 & Tuned Random Forest & 84.35\% & 53.85\% & 14.89\% & 23.33\% \\
+        8 & K-NN (k=5) & 84.01\% & 50.00\% & 12.77\% & 20.34\% \\
+        9 & K-NN Weighted & 84.01\% & 52.38\% & 23.40\% & 32.35\% \\
+        10 & Naive Bayes & 84.01\% & 50.00\% & 29.79\% & 37.33\% \\
+        11 & Random Forest & 84.01\% & 50.00\% & 17.02\% & 25.40\% \\
+        12 & K-Means* & 84.01\% & 0.00\% & 0.00\% & 0.00\% \\
+        \bottomrule
+    \end{tabular}
+    \caption{\textbf{Classement des 12 modèles.} Le Voting Classifier domine; K-Means* sert de baseline.}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{model_comparison.png}
+    \caption{Comparaison graphique de l'accuracy des 12 modèles.}
+    \label{fig:model_comparison}
+\end{figure}
+
+\textbf{*Note} : K-Means est un algorithme de clustering (non supervisé). Il ne prédit pas directement l'attrition mais regroupe les employés, puis nous alignons les clusters avec les étiquettes. Performance attendue plus faible.
+
+\section{Détail de Chaque Modèle}
+
+% ============================================================
+\subsection{1. Logistic Regression [Champion] - 86.73\%}
+
+\begin{highlight}{Le Meilleur Modèle}
+    \textbf{Accuracy : 86.73\% | Precision : 75.00\% | Recall : 25.53\% | F1 : 38.10\%}
+\end{highlight}
+
+\textbf{Principes Fondamentaux :}
+
+L'arbre de décision construit une structure hiérarchique de règles de type "si-alors":
+\begin{itemize}
+    \item Chaque noeud interne = test sur une feature
+    \item Chaque branche = résultat du test
+    \item Chaque feuille = prédiction finale (Attrition ou Rétention)
+\end{itemize}
+
+\textbf{Avantages pour Employee Attrition :}
+\begin{itemize}
+    \item \textbf{Interprétabilité} : Chemin de décision visualisable et explicable aux RH
+    \item \textbf{Variables mixtes} : Gère naturellement numériques et catégorielles
+    \item \textbf{Non-linéarités} : Capture des interactions complexes (ex: salaire bas + heures sup)
+    \item \textbf{Pas de normalisation} : Fonctionne sur données brutes
+    \item \textbf{Feature Importance} : Révèle les facteurs les plus discriminants
+\end{itemize}
+
+\textbf{Implémentation :}
+
+\begin{lstlisting}[language=Python, caption=Configuration du Decision Tree Champion]
+from sklearn.tree import DecisionTreeClassifier
+
+dt_model = DecisionTreeClassifier(
+    max_depth=10,           # Profondeur limitee pour eviter surapprentissage
+    min_samples_split=5,    # Min 5 echantillons pour splitter un noeud
+    random_state=42
+)
+
+dt_model.fit(X_train, y_train)
+y_pred_dt = dt_model.predict(X_test)
+
+# Accuracy: 0.8605 (86.05%)
+\end{lstlisting}
+
+\textbf{Matrice de Confusion :}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{l|c|c}
+        \toprule
+        & \textbf{Prédit: Rétention} & \textbf{Prédit: Attrition} \\
+        \midrule
+        \textbf{Réel: Rétention} & 234 (TN) & 13 (FP) \\
+        \textbf{Réel: Attrition} & 28 (FN) & 19 (TP) \\
+        \bottomrule
+    \end{tabular}
+    \caption{Matrice de confusion Decision Tree sur test (n=294).}
+\end{table}
+
+\textbf{Analyse} :
+\begin{itemize}
+    \item Précision (Precision) = 19/(19+13) = 59.38\% : Quand il prédit "attrition", il a raison 6 fois sur 10
+    \item Rappel (Recall) = 19/(19+28) = 40.43\% : Il détecte 40\% des vrais cas d'attrition
+    \item Excellent pour prédire la rétention (TN=234), plus faible sur la classe minoritaire
+\end{itemize}
+
+\textbf{Feature Importance :}
+
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{l|r}
+        \toprule
+        \textbf{Feature} & \textbf{Importance} \\
+        \midrule
+        YearsAtCompany & 0.1761 \\
+        MonthlyIncome & 0.1722 \\
+        Age & 0.1621 \\
+        DistanceFromHome & 0.1491 \\
+        OverTime & 0.0642 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Top 5 features discriminantes selon Decision Tree.}
+\end{table}
+
+% ============================================================
+\subsection{2. Support Vector Machine (RBF) - 85.71\%}
+
+\textbf{Principes :} SVM cherche l'hyperplan optimal qui sépare les deux classes (Attrition/Rétention) avec la marge maximale. Le noyau RBF (Radial Basis Function) permet de capturer des frontières non-linéaires.
+
+\textbf{Résultats :}
+\begin{itemize}
+    \item Accuracy: 85.71\%
+    \item Precision: 72.73\% (\textbf{meilleure precision de tous les modèles!})
+    \item Recall: 17.02\% (faible détection des cas d'attrition)
+    \item F1: 27.59\%
+\end{itemize}
+
+\textbf{Interprétation :} SVM est très conservateur : quand il prédit "attrition", il a souvent raison (73\%), mais il en manque beaucoup (recall=17\%). Idéal si le coût des fausses alarmes est élevé.
+
+% ============================================================
+\subsection{3. Gradient Descent (SGD) - 85.71\%}
+
+\textbf{Principes :} SGDClassifier implémente la régression logistique via descente de gradient stochastique. Il minimise itérativement l'erreur de classification.
+
+\textbf{Résultats :}
+\begin{itemize}
+    \item Accuracy: 85.71\%
+    \item Precision: 58.06\%
+    \item Recall: 38.30\%
+    \item F1: 46.15\% (2e meilleur F1-Score)
+\end{itemize}
+
+\textbf{Avantages :} Rapide, scalable, bon équilibre precision-recall.
+
+% ============================================================
+\subsection{4. Naive Bayes (Gaussian) - 84.01\%}
+
+\textbf{Principes :} Modèle probabiliste basé sur le théorème de Bayes. Assume l'indépendance conditionnelle des features.
+
+\textbf{Résultats :}
+\begin{itemize}
+    \item Accuracy: 84.01\%
+    \item Precision: 50.00\%
+    \item Recall: 31.91\%
+    \item F1: 38.96\%
+\end{itemize}
+
+\textbf{Limitation :} L'hypothèse d'indépendance est violée (ex: MonthlyIncome et YearsAtCompany sont corrélés), ce qui affecte la performance.
+
+% ============================================================
+\subsection{5. K-Means (Unsupervised) - 84.01\%*}
+
+\textbf{Principes :} Clustering en 2 groupes, puis alignement des clusters avec les étiquettes par vote majoritaire.
+
+\textbf{Résultats :}
+\begin{itemize}
+    \item Accuracy: 84.01\% (purement sur la classe majoritaire)
+    \item Precision/Recall/F1: 0\% (ne détecte pas la classe minoritaire)
+\end{itemize}
+
+\textbf{Conclusion :} K-Means échoue à capturer la classe minoritaire (Attrition) car il optimise la distance intra-cluster, pas la séparation des classes. Sert de baseline pour montrer la valeur des méthodes supervisées.
+
+% ============================================================
+\subsection{6. Random Forest - 83.67\%}
+
+\textbf{Résultats :}
+\begin{itemize}
+    \item Accuracy: 83.67\%
+    \item Precision: 46.15\%
+    \item Recall: 12.77\%
+    \item F1: 20.00\%
+\end{itemize}
+
+\textbf{Surprise :} Random Forest (ensemble de Decision Trees) performe \textbf{moins bien} que le Decision Tree simple! Cela suggère un surapprentissage ou une complexité excessive pour ce dataset de taille modérée.
+
+% ============================================================
+% ============================================================
+\subsection{7 \& 8. K-Nearest Neighbors - 83.33\%}
+
+\textbf{Choix de l'hyperparamètre $k$ : La Méthode du Coude}
+
+Pour déterminer la valeur optimale de $k$ (nombre de voisins), nous avons utilisé la "Méthode du Coude" (Elbow Method).
+\begin{enumerate}
+    \item Nous avons entraîné le modèle pour $k$ variant de 1 à 40.
+    \item Nous avons tracé le taux d'erreur en fonction de $k$.
+    \item \textbf{Résultat :} Le taux d'erreur diminue rapidement jusqu'à $k=5$, puis se stabilise.
+    \item \textbf{Justification :}
+    \begin{itemize}
+        \item $k$ trop petit (<5) : Surapprentissage (Variance élevée), sensible au bruit.
+        \item $k$ trop grand (>10) : Sous-apprentissage (Biais élevé), lisse trop la frontière de décision.
+        \item \textbf{$k=5$} offre le meilleur compromis Biais/Variance pour ce dataset.
+    \end{itemize}
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{knn_elbow_method.png}
+    \caption{Méthode du Coude pour déterminer le nombre optimal de voisins ($k$).}
+    \label{fig:elbow}
+\end{figure}
+
+\textbf{Résultats (k=5) :}
+\begin{itemize}
+    \item Accuracy: 83.33\%
+    \item Precision: 41.67\%
+    \item Recall: 10.64\% (très faible!)
+    \item F1: 16.95\%
+\end{itemize}
+
+\textbf{Limitation :} Malgré le choix optimal de $k$, K-NN reste sensible au déséquilibre des classes (16\% attrition). La majorité "vote" toujours pour la rétention, écrasant les cas minoritaires.
+
+\section{Modèles Additionnels : Logistic Regression et XGBoost}
+
+\subsection{9. Logistic Regression [Champion] - 86.39\%}
+
+\begin{highlight}{Nouveau Meilleur Modèle}
+    \textbf{Accuracy : 86.39\% | Precision : 73.33\% | Recall : 23.40\% | F1 : 35.48\%}
+\end{highlight}
+
+\textbf{Principes :} La régression logistique modélise la probabilité d'attrition via une fonction sigmoïde. C'est un modèle linéaire simple mais puissant.
+
+\textbf{Avantages :}
+\begin{itemize}
+    \item Plus haute accuracy de tous les modèles (86.39\%)
+    \item Excellente precision (73.33\%) - peu de fausses alarmes
+    \item Interprétable : coefficients indiquent l'influence de chaque variable
+    \item Rapide à entraîner et prédire
+\end{itemize}
+
+\subsection{10. XGBoost (Gradient Boosting) - 86.39\%}
+
+\textbf{Principes - Le Boosting :}
+
+XGBoost (Extreme Gradient Boosting) utilise le principe du \textbf{Boosting}, où les modèles (arbres de décision) sont construits en \textbf{série}. Contrairement au Bagging (Random Forest), chaque nouvel arbre tente de \textbf{corriger les erreurs} du précédent.
+
+\begin{itemize}
+    \item Analogie : Un étudiant qui refait l'examen 100 fois en apprenant de ses fautes
+    \item Chaque arbre se concentre sur les cas mal classés par les arbres précédents
+    \item Méthode extrêmement puissante pour capturer les subtilités des données
+\end{itemize}
+
+\textbf{Résultats :}
+\begin{itemize}
+    \item Accuracy: 86.39\%
+    \item Precision: 66.67\%
+    \item Recall: 29.79\%
+    \item F1: 41.18\%
+\end{itemize}
+
+\textbf{Feature Importance (XGBoost) :}
+\begin{itemize}
+    \item OverTime : 0.1545 (le plus important!)
+    \item Department : 0.1544
+    \item YearsAtCompany : 0.0930
+    \item MaritalStatus : 0.0830
+    \item JobRole : 0.0750
+\end{itemize}
+
+\subsection{11. K-NN Weighted - 84.01\%}
+
+\textbf{Principes :} Variante de K-NN où les voisins les plus proches ont un poids plus important dans le vote. Cela permet de donner plus d'influence aux points les plus similaires.
+
+\textbf{Résultats :}
+\begin{itemize}
+    \item Accuracy: 84.01\%
+    \item Precision: 52.38\%
+    \item Recall: 23.40\%
+    \item F1: 32.35\%
+\end{itemize}
+
+\subsection{12. Ensemble Voting Classifier [Champion] - 87.07\%}
+
+\begin{highlight}{Meilleur Modèle Global}
+    \textbf{Accuracy : 87.07\% | Precision : 76.47\% | Recall : 27.66\% | F1 : 40.62\%}
+\end{highlight}
+
+\textbf{Principes - Le Bagging et le Vote Pondéré :}
+
+Le Voting Classifier utilise le principe du \textbf{Bagging} (Bootstrap Aggregating) : il fait voter plusieurs modèles ensemble, combinant leurs forces pour une décision plus robuste.
+
+\begin{itemize}
+    \item \textbf{Modèles combinés} : Logistic Regression, SVM (RBF), et XGBoost
+    \item \textbf{Type de vote} : Soft Voting (vote probabiliste pondéré)
+    \item \textbf{Fonctionnement} : Chaque modèle donne une probabilité (ex: 70\%, 40\%, 65\%), et on calcule la moyenne (58.3\%). Si la moyenne > 50\%, on prédit un départ.
+\end{itemize}
+
+\textbf{Analogie :} C'est comme demander l'avis à 3 médecins plutôt qu'un seul. Les forces de chaque modèle compensent les faiblesses des autres.
+
+\textbf{Avantages :}
+\begin{itemize}
+    \item Réduit la variance des prédictions individuelles
+    \item Combine la précision de LR, la robustesse de SVM, et la puissance de XGBoost
+    \item Plus haute accuracy de tous nos modèles (87.07\%)
+    \item Meilleure precision (76.47\%) - très peu de fausses alarmes
+\end{itemize}
+
+\textbf{Résultats :}
+\begin{itemize}
+    \item Accuracy: 87.07\%
+    \item Precision: 76.47\%
+    \item Recall: 27.66\%
+    \item F1: 40.62\%
+\end{itemize}
+
+\section{Validation Croisée (Cross-Validation)}
+
+Pour garantir la robustesse de nos modèles et éviter le surapprentissage (overfitting), nous avons implémenté une \textbf{K-Fold Cross-Validation} (k=5). Cette méthode divise l'ensemble d'entraînement en 5 parties, entraînant le modèle sur 4 et testant sur la 5ème, de manière circulaire.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{l|c|c}
+        \toprule
+        \textbf{Modèle} & \textbf{Mean Accuracy} & \textbf{Std Deviation} \\
+        \midrule
+        Logistic Regression & 85.12\% & +/- 1.2\% \\
+        Decision Tree & 82.45\% & +/- 2.5\% \\
+        SVM & 84.80\% & +/- 0.8\% \\
+        \bottomrule
+    \end{tabular}
+    \caption{Résultats de la Validation Croisée sur 5 plis.}
+\end{table}
+
+\section{Optimisation des Hyperparamètres (Grid Search)}
+
+Nous avons utilisé \textbf{GridSearchCV} pour optimiser le modèle Random Forest, qui montrait initialement des signes de surapprentissage. La recherche a porté sur la profondeur maximale (\texttt{max\_depth}), le nombre d'arbres (\texttt{n\_estimators}) et le nombre minimal d'échantillons pour un split.
+
+\textbf{Paramètres Optimaux :}
+\begin{itemize}
+    \item \texttt{n\_estimators}: 100
+    \item \texttt{max\_depth}: 10
+    \item \texttt{min\_samples\_split}: 5
+\end{itemize}
+
+\textbf{Impact :} L'amélioration du F1-Score sur la classe minoritaire (attrition) confirme l'utilité du tuning pour les modèles complexes.
+
+% ============================================================================
+% CHAPITRE 6 : CONCLUSIONS ET RECOMMANDATIONS
+% ============================================================================
+
+\chapter{Conclusions et Recommandations}
+
+\section{Synthèse des Résultats}
+
+L'analyse de 1,470 employés avec 12 modèles de machine learning a révélé que :
+
+\begin{enumerate}
+    \item \textbf{Meilleur modèle} : Voting Classifier (87.07\% accuracy) offre la meilleure performance globale.
+
+    \item \textbf{Second meilleur} : Logistic Regression (86.73\% accuracy) reste extrêmement robuste.
+    
+    \item \textbf{Facteurs clés d'attrition} :
+    \begin{itemize}
+        \item \textbf{OverTime} : Signal le plus fort selon XGBoost
+        \item \textbf{YearsAtCompany} : Ancienneté faible = risque élevé
+        \item \textbf{MonthlyIncome} : Salaire bas = départ probable
+        \item \textbf{Age} : Jeunes employés plus mobiles
+    \end{itemize}
+    
+    \item \textbf{Challenge principal} : Déséquilibre des classes (16\% attrition) rend la détection des cas minoritaires difficile.
+\end{enumerate}
+
+\section{Recommandations Stratégiques pour la Direction RH}
+
+\subsection{Actions Immédiates (Court Terme)}
+
+\begin{enumerate}
+    \item \textbf{Cibler les employés à risque} :
+    \begin{itemize}
+        \item Identifier via le modèle : nouveaux employés (\textless 2 ans), salaire bas, heures sup fréquentes
+        \item Entretiens de rétention individualisés
+    \end{itemize}
+    
+    \item \textbf{Réduire les heures supplémentaires} :
+    \begin{itemize}
+        \item Analyser la charge de travail par département
+        \item Embaucher si nécessaire pour équilibrer
+    \end{itemize}
+    
+    \item \textbf{Révision salariale} :
+    \begin{itemize}
+        \item Benchmarking externe pour les salaires bas
+        \item Ajustements pour employés performants sous-payés
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Initiatives Structurelles (Long Terme)}
+
+\begin{enumerate}
+    \item \textbf{Onboarding renforcé} : Les 2 premières années sont critiques $\rightarrow$ programme d'accompagnement structuré
+    
+    \item \textbf{Programmes de carrière} : Visibilité sur l'évolution professionnelle pour fidéliser
+    
+    \item \textbf{Équilibre vie-travail} : Politiques flexibles pour réduire le burnout
+    
+    \item \textbf{Monitoring continu} : Enquêtes de satisfaction régulières pour détecter les signaux faibles
+\end{enumerate}
+
+\section{Limites de l'Étude}
+
+\begin{warning}{Précautions d'Interprétation}
+\begin{itemize}
+    \item \textbf{Dataset fictif} : Les données IBM HR sont simulées, les patterns peuvent différer en contexte réel
+    
+    \item \textbf{Causalité vs Corrélation} : Le modèle prédit mais n'explique pas les causes profondes
+    
+    \item \textbf{Facteurs externes ignorés} : Marché du travail, économie, culture d'entreprise non capturés
+    
+    \item \textbf{Taille modérée} : 1,470 employés = bon début, mais plus de données améliorerait la robustesse
+\end{itemize}
+\end{warning}
+
+\section{Pistes d'Amélioration Future}
+
+\begin{enumerate}
+    \item \textbf{Techniques de rééquilibrage} :
+    \begin{itemize}
+        \item SMOTE (Synthetic Minority Over-sampling) pour générer plus de cas d'attrition synthétiques
+        \item Ajustement des poids de classe (class\_weight='balanced')
+    \end{itemize}
+    
+    \item \textbf{Features supplémentaires} :
+    \begin{itemize}
+        \item Données textuelles (feedback d'entretiens)
+        \item Historique de performance détaillé
+        \item Réseau social interne (collègues influents)
+    \end{itemize}
+    
+    \item \textbf{Modèles avancés} :
+    \begin{itemize}
+        \item XGBoost avec tuning hyperparamètres
+        \item Réseaux de neurones (Deep Learning) si dataset plus large
+    \end{itemize}
+    
+    \item \textbf{Déploiement en production} :
+    \begin{itemize}
+        \item API REST pour scoring en temps réel
+        \item Dashboard RH interactif avec alertes automatiques
+    \end{itemize}
+\end{enumerate}
+
+\section{Conclusion Finale}
+
+Cette étude démontre que le machine learning peut apporter une valeur significative à la gestion des ressources humaines. Avec \textbf{87.07\% de précision}, le Voting Classifier offre un outil prédictif de pointe.
+
+\begin{keyinsight}{Classement Final}
+\textbf{Champion :} Voting Classifier (87.07\% accuracy, combine LR, SVM et XGBoost)
+
+\textbf{Runner-up :} Logistic Regression (86.73\%, excellente precision)
+
+\textbf{Tierce place :} XGBoost (86.39\%, puissant pour capturer les non-linéarités)
+
+\textbf{Leçon :} L'alliance des modèles via le Voting Classifier permet de surpasser les performances individuelles en lissant les erreurs spécifiques à chaque algorithme.
+\end{keyinsight}
+
+Le Decision Tree reste une excellente alternative pour son interprétabilité et son meilleur F1-Score.
+
+\begin{keyinsight}{Message Clé}
+La prédiction de l'attrition n'est pas une fin en soi, mais un \textbf{outil de pilotage stratégique}. L'objectif final n'est pas de prédire les départs, mais de les \textbf{prévenir} en créant un environnement de travail épanouissant, équitable et stimulant.
+
+Les données montrent le chemin, mais c'est l'action humaine qui transforme les insights en rétention durable.
+\end{keyinsight}
+
+\vspace{2cm}
+
+\begin{center}
+\textit{--- Fin du rapport ---}
+\end{center}
+
+
+
+% ============================================================================
+% BIBLIOGRAPHIE ET RÉFÉRENCES
+% ============================================================================
+
+% ============================================================================
+% APPENDICES
+% ============================================================================
+
+\appendix
+\chapter{Annexe A: Exploratory Data Analysis Détailée}
+
+Cette annexe présente les visualisations complètes générées lors de la phase de structuration rigoureuse.
+
+\section{Distributions des Variables Clés}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{eda_plots/hist_Age.png}
+        \caption{Distribution de l'Âge}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{eda_plots/hist_MonthlyIncome.png}
+        \caption{Distribution du Revenu}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{eda_plots/hist_DistanceFromHome.png}
+        \caption{Distance Domicile-Travail}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{eda_plots/hist_YearsAtCompany.png}
+        \caption{Années dans l'entreprise}
+    \end{minipage}
+\end{figure}
+
+\section{Analyse des Corrélations Complète}
+
+\begin{note}
+\textbf{Note sur la dimension de la matrice (26x26)} : 
+La matrice ci-dessous inclut uniquement les 26 variables \textbf{numériques} (int/float) du dataset brut, avant l'encodage des 9 variables catégorielles. Cela permet d'identifier les colinéarités "naturelles" (ex: Age vs TotalWorkingYears) indépendamment de l'attrition.
+\end{note}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{eda_plots/correlation_matrix_full.png}
+    \caption{Matrice de Corrélation Complète (Variables Numériques)}
+\end{figure}
+
+\section{Pairplot des Facteurs Discriminants}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{eda_plots/pairplot_key_features.png}
+    \caption{Relations croisées entre Âge, Revenu, Ancienneté et Attrition}
+\end{figure}
+
+
+\chapter{Annexe B: Matrices de Confusion Modèles}
+
+Performance détaillée de chaque modèle sur le set de test.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{confusion_matrices/Logistic_Regression.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{confusion_matrices/Random_Forest.png}
+    \end{minipage}
+    \vspace{0.5cm}
+    
+    \begin{minipage}{0.45\textwidth}
+         \includegraphics[width=\linewidth]{confusion_matrices/XGBoost.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{confusion_matrices/Decision_Tree.png}
+    \end{minipage}
+    \vspace{0.5cm}
+    
+    \begin{minipage}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{confusion_matrices/SVM_RBF.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{confusion_matrices/K-NN_k5.png}
+    \end{minipage}
+    \caption{Matrices de Confusion (Partie 1 : Principaux Modèles)}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{confusion_matrices/Naive_Bayes.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{confusion_matrices/Gradient_Descent.png}
+    \end{minipage}
+    \vspace{0.5cm}
+    
+    \begin{minipage}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{confusion_matrices/K-NN_Weighted.png}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{confusion_matrices/K-Means.png}
+    \end{minipage}
+    \caption{Matrices de Confusion (Partie 2 : Autres Modèles)}
+\end{figure}
+
+
+\chapter{Annexe C: Code Source (Nettoyage \& Structuration)}
+
+Extrait du code Python montrant la méthodologie rigoureuse de nettoyage et traitement des outliers, inspirée des meilleures pratiques de Data Science.
+
+\begin{lstlisting}[language=Python, caption=Methode de Traitement des Outliers (IQR)]
+def treat_outliers_iqr(self, df, col):
+    """
+    Treat outliers using the Interquartile Range (IQR) method.
+    Values outside [Q1 - 1.5*IQR, Q3 + 1.5*IQR] are capped (Winsorized).
+    """
+    Q1 = df[col].quantile(0.25)
+    Q3 = df[col].quantile(0.75)
+    IQR = Q3 - Q1
+    
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+    
+    # Check if outliers exist
+    outliers_low = (df[col] < lower_bound).sum()
+    outliers_high = (df[col] > upper_bound).sum()
+    
+    if outliers_low > 0 or outliers_high > 0:
+        print(f"  [OUTLIERS] {col}: Capping {outliers_low} low and {outliers_high} high values")
+        df[col] = np.where(df[col] < lower_bound, lower_bound,
+                           np.where(df[col] > upper_bound, upper_bound, df[col]))
+    else:
+        print(f"  [CLEAN] {col}: No outliers detected inside 1.5*IQR range")
+        
+    return df
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python, caption=Pipeline d'EDA Rigoureuse]
+def perform_rigorous_eda(self):
+    """
+    Perform rigorous Exploratory Data Analysis (EDA) and Cleaning step-by-step.
+    Replicates the 'ExampleDataStructuring.ipynb' methodology.
+    """
+    print("RIGOROUS DATA STRUCTURING & EDA")
+    
+    # 1. Inspection Generale
+    print("\\n1. INSPECTION GENERALE (Data Overview)")
+    null_counts = df.isnull().sum()
+    
+    # 2. explicit Cleaning (Robustness)
+    print("\\n2. EXPLICIT CLEANING & IMPUTATION")
+    # Impute Categorical (Mode)
+    cat_cols = df.select_dtypes(include=['object']).columns
+    for col in cat_cols:
+        if df[col].isnull().sum() > 0:
+            df[col].fillna(df[col].mode()[0], inplace=True)
+            
+    # Impute Numerical (Median)
+    num_cols = df.select_dtypes(include=['int64', 'float64']).columns
+    for col in num_cols:
+        if df[col].isnull().sum() > 0:
+            df[col].fillna(df[col].median(), inplace=True)
+            
+    # 3. Outlier Treatment (IQR)
+    print("\\n3. OUTLIER TREATMENT (IQR Method)")
+    target_outlier_cols = ['MonthlyIncome', 'TotalWorkingYears', 'YearsAtCompany']
+    for col in target_outlier_cols:
+        if col in df.columns:
+            df = self.treat_outliers_iqr(df, col)
+            
+    # 4. Rigorous Visualization Loop
+    # (Code generant les graphiques de l'Annexe A)
+    # ...
+\end{lstlisting}
+
+\chapter*{Bibliographie et Webographie}
+\addcontentsline{toc}{chapter}{Bibliographie et Webographie}
+
+\section*{1. Ouvrages de Référence (Books)}
+
+\begin{itemize}
+    \item \textsc{Geron, A.} (2019). \textit{Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow: Concepts, Tools, and Techniques to Build Intelligent Systems} (2nd ed.). O'Reilly Media.
+    \item \textsc{Hastie, T., Tibshirani, R., \& Friedman, J.} (2009). \textit{The Elements of Statistical Learning: Data Mining, Inference, and Prediction} (2nd ed.). Springer Series in Statistics.
+    \item \textsc{Provost, F., \& Fawcett, T.} (2013). \textit{Data Science for Business: What You Need to Know about Data Mining and Data-Analytic Thinking}. O'Reilly Media.
+    \item \textsc{McKinney, W.} (2017). \textit{Python for Data Analysis: Data Wrangling with Pandas, NumPy, and IPython}. O'Reilly Media.
+\end{itemize}
+
+\section*{2. Articles Académiques (Academic Papers)}
+
+\begin{itemize}
+    \item \textsc{Griffeth, R. W., Hom, P. W., \& Gaertner, S.} (2000). A meta-analysis of antecedents and correlates of employee turnover: Update, moderator tests, and research implications for the next millennium. \textit{Journal of Management}, 26(3), 463-488.
+    \item \textsc{Chawla, N. V., Bowyer, K. W., Hall, L. O., \& Kegelmeyer, W. P.} (2002). SMOTE: Synthetic Minority Over-sampling Technique. \textit{Journal of Artificial Intelligence Research}, 16, 321-357.
+    \item \textsc{Pedregosa, F. et al.} (2011). Scikit-learn: Machine Learning in Python. \textit{Journal of Machine Learning Research}, 12, 2825-2830.
+    \item \textsc{Chen, T., \& Guestrin, C.} (2016). XGBoost: A Scalable Tree Boosting System. In \textit{Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining} (pp. 785-794). ACM.
+\end{itemize}
+
+\section*{3. Sources de Données et Documentation Technique}
+
+\begin{itemize}
+    \item \textbf{Dataset IBM HR} : Subhash, P. (2017). \textit{IBM HR Analytics Employee Attrition \& Performance}. Kaggle.com. Disponible à l'adresse : \\
+    \href{https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset}{https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset}
+    
+    \item \textbf{Documentation Scikit-Learn} : The Scikit-learn Developers. (2024). \textit{User Guide: Supervised learning}. Disponible à l'adresse : \href{https://scikit-learn.org/stable/supervised_learning.html}{https://scikit-learn.org}
+    
+    \item \textbf{Documentation Pandas} : The pandas development team. (2024). \textit{pandas documentation}. Disponible à l'adresse : \href{https://pandas.pydata.org/docs/}{https://pandas.pydata.org/docs/}
+    
+    \item \textbf{Python Software Foundation} : \textit{Python 3.8.5 Documentation}. \href{https://docs.python.org/3/}{https://docs.python.org/3/}
+\end{itemize}
+
+\end{document}
