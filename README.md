@@ -1,4 +1,4 @@
-# 🎯 Employee Attrition Prediction - Machine Learning Project
+# Employee Attrition Prediction - Machine Learning Project
 
 > **Projet Data Science S7 | 2024-2025**  
 > Analyse comparative de 12 modèles de Machine Learning pour la prédiction du turnover des employés
